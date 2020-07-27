@@ -42,7 +42,7 @@ function get_dependants($user_id=null){
     if (!$user){
         return [];
     }else{
-        return $user->get_dependants();
+        return $user->allDependants();
     }
 }
 
