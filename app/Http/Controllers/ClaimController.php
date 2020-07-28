@@ -81,9 +81,18 @@ class ClaimController extends Controller
         try {
             $request = $request->all();
             $claim = Claim::find($id);
+            $user_insurance = User_Insurance::where('user_id',$claim['user_id'])->where('insurance_id',$claim['insurance_id'])->get();
+            if (!$user_insurance && is_null($user_insurance)){
+                return response()->json(['data'=>[],'message'=>'User is not assigned this insurance']);
+            }
+            if ($claim['amount'] > $user_insurance['balance']){
+                return response()->json(['data'=>[],'message'=>'Claim balance is lower than requested amount']);
+            }
             if ($request['action'] == 'APPROVE'){
                 $claim->status = APPROVED;
                 $claim->save();
+                $user_insurance->balance = $user_insurance['balance'] - $claim['amount'];
+                $user_insurance->save();
                 $message = 'Claim approved successfully';
             }else if($request['action'] == 'REJECT'){
                 $claim->status=REJECTED;
