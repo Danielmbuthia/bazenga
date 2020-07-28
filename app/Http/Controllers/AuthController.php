@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Role;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -13,6 +14,7 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         try {
+            $role = Role::where('name','PATIENT')->first();
             $user = User::create([
                 'email' => $request->email,
                 'password' => bcrypt($request->password),
@@ -21,7 +23,7 @@ class AuthController extends Controller
                 'sur_name'=>$request['surname'],
                 'username'=>$request['username'],
                 'mobile'=>$request['mobile'],
-                'role_id'=>$request['role_id'],
+                'role_id'=>isset($request['role_id']) ? $request['role_id'] :$role['id'],
             ]);
             $token = auth()->login($user);
             $data = auth()->user();
