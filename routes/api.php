@@ -18,14 +18,14 @@ use Illuminate\Support\Facades\Route;
 //    return response()->json(['data' => [], 'message' => 'test', 'success' => true]);
 //});
 // auth routes
-Route::group(['middleware' => 'api','prefix' => 'auth'], function ($router) {
+Route::group(['middleware' => ['api','jwt-cors'],'prefix' => 'auth'], function ($router) {
     Route::post('login', 'AuthController@login')->name('login');
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
     Route::post('register', 'AuthController@register');
     Route::get('user', 'AuthController@getAuthUser');
 });
-Route::group(['middleware'=>['jwt.auth']],function (){
+Route::group(['middleware'=>['jwt.auth','jwt-cors']],function (){
     Route::post('add-dependant','AuthController@addDependants');
     Route::group(['prefix'=>'hospital'],function(){
         Route::get('/','HospitalController@index');

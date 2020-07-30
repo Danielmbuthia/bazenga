@@ -86,6 +86,8 @@ class ClaimController extends Controller
                 return response()->json(['data'=>[],'message'=>'User is not assigned this insurance']);
             }
             if ($claim['amount'] > $user_insurance['balance']){
+                $claim->status=REJECTED;
+                $claim->save();
                 return response()->json(['data'=>[],'message'=>'Claim balance is lower than requested amount']);
             }
             if ($request['action'] == 'APPROVE'){
